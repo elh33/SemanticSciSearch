@@ -1,94 +1,224 @@
 # SemanticSciSearch
 
-SemanticSciSearch is a semantic search engine designed for scientific articles. This application leverages modern web technologies to provide an efficient and user-friendly interface for searching and retrieving scientific literature.
+A modern semantic search engine for scientific articles using BERT embeddings, React, FastAPI, and Elasticsearch.
 
-## Project Structure
+## 🎯 Project Overview
 
-The project is divided into two main parts: the frontend and the backend.
+SemanticSciSearch enables intelligent search through scientific articles using semantic similarity rather than keyword matching. The system understands that "AI for heart disease" is semantically similar to "machine learning for cardiology" even with different words.
+
+## 🏗️ Architecture
 
 ### Frontend
-
-The frontend is built using React.js and TypeScript. It consists of the following key components:
-
-- **SearchBar**: A component for user input to search for articles.
-- **SearchResults**: Displays the list of articles returned from the search.
-- **ArticleCard**: Represents an individual article in the search results.
-
-The frontend communicates with the backend through API calls defined in the `services/api.ts` file.
+- **Framework**: React 18 + TypeScript + Vite
+- **UI Components**: 
+  - `SearchBar`: User input interface
+  - `SearchResults`: Display search results
+  - `ArticleCard`: Individual article display with similarity score
+- **API Client**: Axios for backend communication
 
 ### Backend
+- **Framework**: FastAPI (Python)
+- **NLP Model**: BERT via sentence-transformers
+- **Database**: Elasticsearch (as vector store)
+- **Search Method**: k-NN with cosine similarity
 
-The backend is built using FastAPI and interacts with Elasticsearch for data storage and retrieval. The key components include:
-
-- **API Routes**: Handles incoming search requests and processes them.
-- **Services**: Contains the logic for searching and embedding articles.
-- **Models**: Defines the data structure for articles.
-
-## Setup Instructions
+## 🚀 Setup Instructions
 
 ### Prerequisites
 
-- Node.js and npm for the frontend
-- Python 3.7+ for the backend
-- Docker for containerization (optional)
+- **Node.js** 18+ and npm 10+
+- **Python** 3.9+
+- **Docker** (for Elasticsearch)
+- **Git**
 
-### Frontend Setup
+### 1. Clone the Repository
 
-1. Navigate to the `frontend` directory:
-   ```
-   cd frontend
-   ```
+```bash
+git clone https://github.com/yourusername/SemanticSciSearch.git
+cd SemanticSciSearch
+```
 
-2. Install the dependencies:
-   ```
-   npm install
-   ```
+### 2. Frontend Setup
 
-3. Start the development server:
-   ```
-   npm start
-   ```
+```bash
+cd frontend
 
-### Backend Setup
+# Install dependencies
+npm install
 
-1. Navigate to the `backend` directory:
-   ```
-   cd backend
-   ```
+# Start development server
+npm run dev
+```
 
-2. Create a virtual environment (optional but recommended):
-   ```
-   python -m venv venv
-   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-   ```
+The frontend will run on `http://localhost:3000`
 
-3. Install the required Python packages:
-   ```
-   pip install -r requirements.txt
-   ```
+### 3. Backend Setup
 
-4. Start the FastAPI server:
-   ```
-   uvicorn app.main:app --reload
-   ```
+```bash
+cd backend
 
-### Running with Docker
+# Create virtual environment
+python -m venv venv
 
-To run the application using Docker, you can use the provided `docker-compose.yml` file. This will set up both the frontend and backend services along with Elasticsearch.
+# Activate virtual environment
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
 
-1. Run the following command in the root directory:
-   ```
-   docker-compose up
-   ```
+# Install dependencies
+pip install -r requirements.txt
 
-## Usage
+# Start FastAPI server
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
 
-Once the application is running, you can access the frontend at `http://localhost:3000` and use the search functionality to find scientific articles.
+The API will run on `http://localhost:8000`
 
-## Contributing
+### 4. Start Elasticsearch
 
-Contributions are welcome! Please feel free to submit a pull request or open an issue for any enhancements or bug fixes.
+```bash
+# Using Docker Compose (recommended)
+docker-compose up -d
 
-## License
+# Or run Elasticsearch manually
+docker run -d -p 9200:9200 -e "discovery.type=single-node" elasticsearch:8.11.0
+```
 
-This project is licensed under the MIT License. See the LICENSE file for more details.
+### 5. Index Articles (First Time Only)
+
+```bash
+cd backend
+python scripts/indexer.py
+```
+
+This will:
+- Load ~50 scientific articles
+- Generate BERT embeddings
+- Store vectors in Elasticsearch
+
+## 📁 Project Structure
+
+```
+SemanticSciSearch/
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── SearchBar.tsx
+│   │   │   ├── SearchResults.tsx
+│   │   │   └── ArticleCard.tsx
+│   │   ├── services/
+│   │   │   └── api.ts
+│   │   ├── types/
+│   │   │   └── index.ts
+│   │   ├── App.tsx
+│   │   └── index.tsx
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── vite.config.ts
+├── backend/
+│   ├── app/
+│   │   ├── api/
+│   │   │   └── routes/
+│   │   │       └── search.py
+│   │   ├── core/
+│   │   │   ├── config.py
+│   │   │   └── elasticsearch.py
+│   │   ├── models/
+│   │   │   └── article.py
+│   │   ├── services/
+│   │   │   ├── search_service.py
+│   │   │   └── embedding_service.py
+│   │   └── main.py
+│   └── requirements.txt
+├── docker-compose.yml
+└── README.md
+```
+
+## 🧪 Usage
+
+1. Open `http://localhost:3000`
+2. Enter a natural language query (e.g., "machine learning for medical diagnosis")
+3. View results ranked by semantic similarity score
+4. Each result shows:
+   - Article title
+   - Abstract excerpt
+   - **Similarity score** (0.0 - 1.0)
+
+## 🎯 Key Features
+
+- **Semantic Understanding**: Finds conceptually similar articles, not just keyword matches
+- **BERT Embeddings**: Uses state-of-the-art NLP model
+- **Fast Search**: Elasticsearch k-NN for efficient vector search
+- **Modern UI**: React 18 with TypeScript and Vite
+- **RESTful API**: FastAPI backend with automatic OpenAPI docs
+
+## 📊 Evaluation
+
+The system is evaluated using:
+- **Precision**: Accuracy of retrieved results
+- **Recall**: Coverage of relevant documents
+- **F1-Score**: Harmonic mean of precision and recall
+- **Confusion Matrix**: For 5 test queries
+
+## 🛠️ Development Commands
+
+### Frontend
+```bash
+npm run dev      # Start dev server
+npm run build    # Production build
+npm run preview  # Preview production build
+```
+
+### Backend
+```bash
+uvicorn app.main:app --reload  # Dev server with hot reload
+pytest                          # Run tests
+```
+
+## 📝 Environment Variables
+
+Create `.env` files:
+
+**backend/.env**
+```env
+ELASTICSEARCH_HOST=http://localhost:9200
+BERT_MODEL=sentence-transformers/all-MiniLM-L6-v2
+VECTOR_DIMENSION=384
+```
+
+**frontend/.env**
+```env
+VITE_API_URL=http://localhost:8000
+```
+
+## 🐳 Docker Deployment
+
+```bash
+# Start all services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+```
+
+## 📚 Technologies
+
+- **Frontend**: React 18, TypeScript, Vite, Axios
+- **Backend**: FastAPI, sentence-transformers, Python 3.9+
+- **Database**: Elasticsearch 8.x
+- **NLP**: BERT (all-MiniLM-L6-v2)
+- **Containerization**: Docker, Docker Compose
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+**Note**: This is an academic project demonstrating semantic search capabilities using modern NLP and web technologies.

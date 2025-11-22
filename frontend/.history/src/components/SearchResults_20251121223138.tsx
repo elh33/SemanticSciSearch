@@ -1,0 +1,137 @@
+import React, { useState, useEffect } from 'react';
+import { Article } from '../types';
+import { searchArticles } from '../services/api';
+import ArticleCard from './ArticleCard';
+
+const SearchResults: React.FC = () => {
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState<Article[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
+
+  const handleSearch = async (searchQuery: string = query) => {
+    setIsLoading(true);
+    setHasSearched(true);
+
+    try {a
+      const data = await searchArticles(searchQuery);
+      // TRI PAR SCORE DÉCROISSANT (plus pertinent en premier)
+      const sortedData = [...data].sort((a, b) => b.score - a.score);
+      setResults(sortedData);
+    } catch (error) {
+      console.error("Erreur lors de la recherche:", error);
+      setResults([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Recherche initiale au chargement
+  useEffect(() => {
+    handleSearch('');
+  }, []);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleSearch();
+  };
+
+  return (
+    <div className="min-h-screen bg-white">
+      {/* En-tête style Google Scholar */}
+      <div className="bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
+        <div className="max-w-5xl mx-auto px-4 py-3">
+          <div className="flex items-center gap-6">
+            {/* Logo/Titre */}
+            <h1 className="text-2xl font-normal text-blue-700 whitespace-nowrap">
+              SemanticSciSearch
+            </h1>
+            
+            {/* Barre de recherche */}
+            <form onSubmit={handleSubmit} className="flex-grow max-w-2xl">
+              <div className="flex border border-gray-300 rounded-full hover:shadow-md transition-shadow">
+                <input
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Rechercher des articles scientifiques..."
+                  className="flex-grow px-5 py-2 rounded-l-full outline-none text-sm"
+                />
+                <button
+                  type="submit"
+                  className="px-6 py-2 bg-blue-600 text-white rounded-r-full hover:bg-blue-700 transition-colors text-sm font-medium"
+                >
+                  🔍 Rechercher
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      {/* Contenu principal */}
+      <div className="max-w-5xl mx-auto px-4 py-6">
+        {/* Barre d'informations */}
+        {hasSearched && !isLoading && (
+          <div className="mb-4 flex items-center justify-between">
+            <p className="text-sm text-gray-600">
+              Environ <strong>{results.length}</strong> résultat{results.length > 1 ? 's' : ''}
+              {query && (
+                <span> pour <strong>"{query}"</strong></span>
+              )}
+              <span className="ml-2 text-xs text-gray-500">(triés par pertinence)</span>
+            </p>
+            
+            {/* Options de tri (désactivées car déjà trié par score) */}
+            <div className="text-xs text-gray-500">
+              <span className="font-semibold text-blue-700">Par pertinence</span>
+              {/* Vous pouvez ajouter d'autres options de tri ici */}
+            </div>
+          </div>
+        )}
+
+        {/* Indicateur de chargement */}
+        {isLoading && (
+          <div className="flex items-center justify-center py-12">
+            <div className="flex flex-col items-center gap-3">
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+              <p className="text-gray-600 text-sm">Recherche sémantique en cours...</p>
+            </div>
+          </div>
+        )}
+
+        {/* Liste des résultats */}
+        {!isLoading && (
+          <div className="bg-white">
+            {results.length > 0 ? (
+              results.map((article) => (
+                <ArticleCard key={article.id} article={article} />
+              ))
+            ) : (
+              hasSearched && (
+                <div className="text-center py-12">
+                  <svg className="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <p className="text-gray-600 text-lg">Aucun résultat trouvé</p>
+                  <p className="text-gray-500 text-sm mt-2">
+                    Essayez avec des mots-clés différents
+                  </p>
+                </div>
+              )
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Footer simple */}
+      <footer className="mt-12 border-t border-gray-200 bg-gray-50">
+        <div className="max-w-5xl mx-auto px-4 py-6 text-center text-sm text-gray-500">
+          SemanticSciSearch - Recherche sémantique d'articles scientifiques en IA et Cardiologie
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default SearchResults;

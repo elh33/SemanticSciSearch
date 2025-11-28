@@ -213,7 +213,7 @@ docker-compose down
 - **NLP**: BERT (pritamdeka/S-BioBERT-snli-multinli-stsb) et BERT(allenai/scibert_scivocab_uncased)
 - **Containerization**: Docker, Docker Compose
   
-## Pour indexeer notre base de donner
+## Pour indexer les articles 
   - run script backend/scripts/index_articles_biobert.py
 ## 🤝 Contributing
 

@@ -210,9 +210,11 @@ docker-compose down
 - **Frontend**: React 18, TypeScript, Vite, Axios
 - **Backend**: FastAPI, sentence-transformers, Python 3.9+
 - **Database**: Elasticsearch 8.x
-- **NLP**: BERT (all-MiniLM-L6-v2)
+- **NLP**: BERT (pritamdeka/S-BioBERT-snli-multinli-stsb) et BERT(allenai/scibert_scivocab_uncased)
 - **Containerization**: Docker, Docker Compose
-
+  
+## Pour indexeer notre base de donner
+  - run script backend/scripts/index_articles_biobert.py
 ## 🤝 Contributing
 
 1. Fork the repository

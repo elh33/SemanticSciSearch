@@ -1,32 +1,26 @@
 version: '3.8'
 
 services:
+  # 1. The Search Engine (Infrastructure)
+  elasticsearch:
+      image: docker.elastic.co/elasticsearch/elasticsearch:7.17.12  # <--- CHANGED THIS
+      container_name: elastic_server
+      environment:
+        - discovery.type=single-node
+        # - xpack.security.enabled=false  <-- REMOVE THIS LINE (Not needed/supported in v7)
+        - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      ports:
+        - "9200:9200"
+
+  # 2. The Frontend (Node.js Environment)
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: node:24-alpine
+    working_dir: /app
+    volumes:
+      - ./frontend:/app         # Syncs your code
+ #     - /app/node_modules       # Isolates dependencies
     ports:
       - "3000:3000"
-    depends_on:
-      - backend
-
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    ports:
-      - "8000:8000"
-    environment:
-      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    command: npm run dev -- --host  # Starts Vite server
     depends_on:
       - elasticsearch
-
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.10 
-    container_name: elasticsearch 
-    environment:
-      - discovery.type=single-node
-      - ES_JAVA_OPTS=-Xms1g -Xmx1g
-      - xpack.security.enabled=false   # désactive sécurité pour tests locaux
-    ports:
-      - "9200:9200"

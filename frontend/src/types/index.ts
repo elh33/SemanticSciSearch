@@ -13,23 +13,23 @@ export interface SearchRequest {
 export interface Article {
   rank: number;
   title: string;
-  abstract: string;  // ✅ Ajout de l'abstract
+  abstract: string;
   best_sentence: string;
   keywords: string[];
   authors: string;
   year: number;
   score: number;
+  similarity: number;
   url: string;
-  // Champs optionnels du backend
-  score_es?: number;
-  excerpt?: string;
-  similarity?: number;
+  score_raw?: number;
   best_sentence_score?: number;
 }
 
 export interface SearchResponse {
   query: string;
-  filter: SearchFilters;
+  filters: SearchFilters;
   documents: Article[];
-  latency_ms?: number;
+  total: number;
+  latency_ms: number;
+  is_semantic_search?: boolean;
 }

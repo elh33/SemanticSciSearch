@@ -8,9 +8,9 @@ interface ArticleCardProps {
 const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
   const [showAbstract, setShowAbstract] = useState(false);
   
-  const scorePercent = article.score > 1 
-    ? ((article.score - 1) * 100).toFixed(0)
-    : (article.score * 100).toFixed(0);
+  // Format scores
+  const scorePercent = article.score.toFixed(1);
+  const similarityPercent = (article.similarity * 100).toFixed(1);
   
   return (
     <>
@@ -40,7 +40,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
           {article.authors}
         </div>
         
-        {/* Column 3: Article (Title + Keywords + Best Sentence + Relevance) */}
+        {/* Column 3: Article (Title + Keywords + Best Sentence + Scores) */}
         <div>
           {/* Title */}
           <h3 style={{ margin: '0 0 4px 0' }}>
@@ -103,13 +103,19 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
             {article.best_sentence}
           </p>
           
-          {/* Relevance */}
+          {/* Score and Similarity - Side by Side */}
           <div style={{ 
+            display: 'flex',
+            gap: '20px',
             fontSize: '13px',
-            color: '#1a73e8',
             fontWeight: '500'
           }}>
-            Relevance: {scorePercent}%
+            <span style={{ color: '#1a73e8' }}>
+              Score: {scorePercent}%
+            </span>
+            <span style={{ color: '#1a73e8' }}>
+              Similarity: {similarityPercent}%
+            </span>
           </div>
         </div>
         

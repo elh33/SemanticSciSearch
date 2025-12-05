@@ -1,5 +1,5 @@
 FastAPI
-Elasticsearch
+elasticsearch==7.17.12
 uvicorn
 pydantic
 python-dotenv
@@ -7,9 +7,9 @@ requests
 numpy
 scikit-learn
 transformers
-torch
 sentence-transformers
 nltk
-biobert-embedding
 sentencepiece
 tqdm
+torch
+pydantic-settings

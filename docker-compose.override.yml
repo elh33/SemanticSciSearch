@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  frontend:
+    volumes:
+      - ./frontend:/app
+      # - /app/node_modules   # HERE (Disables the ghost folder)
+    environment:
+      - CHOKIDAR_USEPOLLING=true

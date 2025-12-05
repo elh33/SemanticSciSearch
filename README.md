@@ -2,7 +2,6 @@
 
 A modern **semantic search engine** for medical AI scientific articles powered by BioBERT embeddings, React, FastAPI, and Elasticsearch.
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
 ![React](https://img.shields.io/badge/react-18.0+-61dafb.svg)
 ![FastAPI](https://img.shields.io/badge/fastapi-0.104+-009688.svg)

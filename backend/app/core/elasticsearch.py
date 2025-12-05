@@ -25,5 +25,6 @@ class ElasticSearchClient:
         except NotFoundError:
             return None
 
+
     def delete_article(self, index_name, article_id):
         self.client.delete(index=index_name, id=article_id)

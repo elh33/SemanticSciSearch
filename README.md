@@ -551,20 +551,7 @@ Contributions are welcome! Please follow these steps:
 
 ---
 
-## 📄 License
-
-This project is for **academic purposes** as part of a university project demonstrating semantic search capabilities using modern NLP and web technologies.
-
----
-
-## 📧 Contact
-
-- **Author**: Marouane
-- **Repository**: [github.com/elh33/SemanticSciSearch](https://github.com/elh33/SemanticSciSearch)
-
----
-
-## 🎓 Academic Context
+## 📄 Context
 
 This project demonstrates:
 - **Semantic Search**: Understanding meaning beyond keywords
